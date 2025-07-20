@@ -1,15 +1,26 @@
 import ChatWidget from "./ChatWidget";
 
 const defaultTheme = {
-  primaryColor: '#3B82F6',
-  secondaryColor: '#EFF6FF',
-  backgroundColor: '#FFFFFF',
-  textColor: '#1F2937',
-  botMessageColor: '#F3F4F6',
-  userMessageColor: '#3B82F6',
-  headerColor: '#1F2937',
-  buttonColor: '#3B82F6',
-  companyName: 'Your Company',
+  id: "modern-blue",
+  name: "Modern Blue",
+  description:
+    "A sophisticated blue theme with perfect contrast and readability",
+  primaryColor: "#1d4ed8",
+  secondaryColor: "#589ee4",
+  backgroundColor: "#ffffff",
+  textColor: "#1f2937",
+  borderRadius: "1rem",
+  fontSize: "1rem",
+  position: "bottom-right",
+  headerFooterBgColor: "#589ee4",
+  inputContainerBgColor: "#f1f5f9",
+  aiMessageBgColor: "#f8fafc",
+  userMessageBgColor: "#1d4ed8",
+  botMessageColor: "#f8fafc", // matches aiMessageBgColor
+  userMessageColor: "#1d4ed8", // matches userMessageBgColor
+  headerColor: "#589ee4", // matches headerFooterBgColor
+  buttonColor: "#1d4ed8", // matches primaryColor
+  companyName: "Your Company",
   companyLogo: '',
   welcomeMessage: 'Hello! How can I help you today?',
 };
