@@ -10,10 +10,22 @@
   <div id="my-chatbot"></div>
 
   <!-- 2. Add the CDN script and mount the widget with your client ID -->
-  <script src="https://cdn.jsdelivr.net/gh/MM-27-dev/customer0-support-cdn@master/abcd.js"></script>
+  <!-- 1. Load the widget bundle -->
+  <script src="https://cdn.jsdelivr.net/gh/MM-27-dev/customer0-support-cdn@master/sanjeev.js"></script>
+  
+  <!-- 2. Mount the widget on page load -->
   <script>
-    // Replace 'YOUR_CLIENT_ID' with your actual client key
-    window.mountCustomerSupportChatbot(document.getElementById('my-chatbot'), 'e89fbf69-da82-4a91-89f6-a347232d6cce');
+    window.addEventListener("load", function () {
+      if (window.ChatBotWidget) {
+        const container = document.createElement("div");
+        document.body.appendChild(container);
+        window.ChatBotWidget.mount(container, {
+          clientKey: "e89fbf69-da82-4a91-89f6-a347232d6cce", // Replace with your actual client key
+          customUserId: "optional-user-id", // Optional
+          apiUrl: "http://localhost:5000/api", // Or your deployed API URL
+        });
+      }
+    });
   </script>
 </body>
 </html> 

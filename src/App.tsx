@@ -32,7 +32,7 @@ interface AppProps {
   theme?: typeof defaultTheme;
 }
 
-function App({ clientKey, customUserId, apiUrl, theme }: AppProps) {
+function App({ clientKey = "3de3d29a-cad0-4ec2-b3e1-922865ac6160", customUserId, apiUrl, theme }: AppProps) {
   const _clientKey = clientKey || "demo-key";
   const _customUserId = customUserId || "demo-user";
   const _apiUrl = apiUrl || "http://localhost:5000/api";

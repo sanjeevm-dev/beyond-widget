@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, Send, Bot, User, X, Minimize2, Maximize2 } from 'lucide-react';
+import axios from 'axios';
+import EmailCollector from './EmailCollector';
 
 export interface ChatbotTheme {
   primaryColor: string;
@@ -45,6 +47,11 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
   const [unreadCount, setUnreadCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState(false);
+  const [showEmailCollector, setShowEmailCollector] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [isConnected, setIsConnected] = useState(true);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -70,22 +77,130 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
     }
   }, [messages, isOpen]);
 
-  const sendMessage = () => {
-    if (!inputValue.trim()) return;
+  // Helper to get email from localStorage
+  const hasUserEmail = () => {
+    return !!localStorage.getItem('userEmail');
+  };
+
+  // Helper to generate a sessionId (UUID v4 or fallback)
+  const generateSessionId = () => {
+    if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+    return Math.random().toString(36).substring(2) + Date.now().toString(36);
+  };
+
+  // Initialize theme and conversation
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        // Check if user has email
+        const email = localStorage.getItem('userEmail');
+        if (!email) {
+          setShowEmailCollector(true);
+          return;
+        }
+        setUserEmail(email);
+        setShowEmailCollector(false);
+        // Start or get existing conversation
+        const sid = generateSessionId();
+        setSessionId(sid);
+        // Optionally, call backend to create conversation
+        try {
+          await axios.post(`${apiUrl || "http://localhost:5000/api"}/conversations/create-conversation`, {
+            clientKey,
+            userEmail: email,
+            sessionId: sid,
+            message: theme.welcomeMessage,
+            isBot: true,
+          });
+        } catch (err) {
+          // Ignore if already exists
+        }
+        // Optionally, set isConnected true
+        setIsConnected(true);
+      } catch (error) {
+        setIsConnected(false);
+      }
+    };
+    initializeApp();
+  }, [clientKey, customUserId]);
+
+  // Handler for email collection
+  const handleEmailCollected = (email: string) => {
+    setUserEmail(email);
+    setShowEmailCollector(false);
+    // Re-run initialization
+    // (could refactor to a function)
+    const sid = generateSessionId();
+    setSessionId(sid);
+    axios.post(`${apiUrl || "http://localhost:5000/api"}/conversations/create-conversation`, {
+      clientKey,
+      userEmail: email,
+      sessionId: sid,
+      message: theme.welcomeMessage,
+      isBot: true,
+    });
+  };
+
+  // Only show chat if session is initialized
+  if (showEmailCollector || !userEmail || !sessionId) {
+    return <EmailCollector onEmailCollected={handleEmailCollected} theme={theme} />;
+  }
+
+  const sendMessage = async () => {
+    if (!inputValue.trim() || loading) return;
     const userMessage: Message = {
       id: Date.now(),
       text: inputValue,
       isBot: false,
       timestamp: new Date(),
     };
-    const botResponse: Message = {
-      id: Date.now() + 1,
-      text: "This is a preview response. Your actual chatbot will use AI to respond based on your FAQs.",
-      isBot: true,
-      timestamp: new Date(),
-    };
-    setMessages([...messages, userMessage, botResponse]);
+    setMessages((msgs) => [...msgs, userMessage]);
     setInputValue('');
+    setLoading(true);
+    try {
+      // Save user message to conversation
+      await axios.post(`${apiUrl || "http://localhost:5000/api"}/conversations/create-conversation`, {
+        clientKey,
+        userEmail,
+        sessionId,
+        message: userMessage.text,
+        isBot: false,
+      });
+      // Get bot response
+      const response = await axios.post(`${apiUrl || "http://localhost:5000/api"}/chat/chatResponse`, {
+        clientKey: clientKey,
+        message: userMessage.text,
+        userEmail,
+        sessionId,
+      });
+      const botResponse: Message = {
+        id: Date.now() + 1,
+        text: response.data.response,
+        isBot: true,
+        timestamp: new Date(),
+      };
+      setMessages((msgs) => [...msgs, botResponse]);
+      // Save bot message to conversation
+      await axios.post(`${apiUrl || "http://localhost:5000/api"}/conversations/create-conversation`, {
+        clientKey,
+        userEmail,
+        sessionId,
+        message: botResponse.text,
+        isBot: true,
+      });
+    } catch (error) {
+      setMessages((msgs) => [
+        ...msgs,
+        {
+          id: Date.now() + 2,
+          text: 'Sorry, there was an error contacting the chatbot.',
+          isBot: true,
+          timestamp: new Date(),
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Format time
@@ -252,6 +367,28 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
                     )}
                   </div>
                 ))}
+                {loading && (
+                  <div className="flex justify-start items-end gap-2">
+                    <span className="bg-violet-100 rounded-full p-1 border border-violet-200"><Bot size={20} color={theme.primaryColor} /></span>
+                    <div
+                      className="max-w-xs p-3 rounded-2xl text-sm shadow rounded-bl-none"
+                      style={{
+                        backgroundColor: theme.botMessageColor,
+                        color: theme.textColor,
+                      }}
+                    >
+                      <div className="inline-flex items-center">
+                        {[0, 1, 2].map((i) => (
+                          <span
+                            key={i}
+                            className="h-1.5 w-1.5 bg-current rounded-full inline-block mx-0.5 opacity-40 animate-pulse"
+                            style={{ animationDelay: `${i * 0.2}s` }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div ref={messagesEndRef} />
               </div>
             )}
