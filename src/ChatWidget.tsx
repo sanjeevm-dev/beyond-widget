@@ -51,6 +51,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
   const [showEmailCollector, setShowEmailCollector] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  //@ts-ignore
   const [isConnected, setIsConnected] = useState(true);
 
   // Auto-scroll to bottom
@@ -77,10 +78,6 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
     }
   }, [messages, isOpen]);
 
-  // Helper to get email from localStorage
-  const hasUserEmail = () => {
-    return !!localStorage.getItem('userEmail');
-  };
 
   // Helper to generate a sessionId (UUID v4 or fallback)
   const generateSessionId = () => {
@@ -141,10 +138,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
     });
   };
 
-  // Only show chat if session is initialized
-  if (showEmailCollector || !userEmail || !sessionId) {
-    return <EmailCollector onEmailCollected={handleEmailCollected} theme={theme} />;
-  }
+  
 
   const sendMessage = async () => {
     if (!inputValue.trim() || loading) return;
@@ -211,18 +205,6 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
     });
   };
 
-  // Typing dots (static for preview)
-  const TypingDots = () => (
-    <div className="inline-flex items-center">
-      {[0, 1, 2].map((i) => (
-        <span
-          key={i}
-          className="h-1.5 w-1.5 bg-current rounded-full inline-block mx-0.5 opacity-40 animate-pulse"
-          style={{ animationDelay: `${i * 0.2}s` }}
-        />
-      ))}
-    </div>
-  );
 
   // Get position styles
   const getPositionStyles = () => ({
@@ -339,7 +321,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
             </div>
 
             {/* Messages */}
-            {!isMinimized && (
+            {!isMinimized && !showEmailCollector  && (
               <div
                 className="h-80 overflow-y-auto p-4 space-y-4 bg-white/90"
                 style={{ background: theme.backgroundColor }}
@@ -394,7 +376,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
             )}
 
             {/* Input */}
-            {!isMinimized && (
+            {!isMinimized && !showEmailCollector  && (
               <div className="p-4 border-t border-gray-200 bg-white/95">
                 <div className="flex items-center space-x-2">
                   <input
@@ -417,6 +399,11 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
                 </div>
               </div>
             )}
+
+           
+   {(showEmailCollector || !userEmail || !sessionId) && 
+     <EmailCollector onEmailCollected={handleEmailCollected} theme={theme} />}
+  
 
             {/* Footer */}
             <div
