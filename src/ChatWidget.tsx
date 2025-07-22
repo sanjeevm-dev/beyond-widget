@@ -410,7 +410,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
             {/* Footer */}
             <div
               className="px-4 py-2 text-xs text-center"
-              style={{ background: theme.headerColor, color: theme.textColor + 'b0' }}
+              style={{ background: theme.primaryColor, color: theme.textColor + 'b0' }}
             >
               Powered by <span className="font-semibold">{theme.companyName}</span>
             </div>
