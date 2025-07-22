@@ -15,9 +15,11 @@ const DEFAULT_THEME: ChatbotTheme = {
   welcomeMessage: 'Hello! How can I help you today?',
 };
 
+const BackEndURL = "https://customer-support-chatbot-backend-oqjr.onrender.com";
+
 async function fetchTheme(clientKey: string): Promise<ChatbotTheme> {
   try {
-    const res = await fetch(`http://localhost:5000/api/theme/public/${clientKey}`);
+    const res = await fetch(`${BackEndURL}/api/theme/public/${clientKey}`);
     if (!res.ok) throw new Error('Theme fetch failed');
     const data = await res.json();
     return { ...DEFAULT_THEME, ...data };
