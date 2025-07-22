@@ -104,7 +104,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
         setSessionId(sid);
         // Optionally, call backend to create conversation
         try {
-          await axios.post(`${apiUrl || `${BackEndURL}/api`}/conversations/create-conversation`, {
+          await axios.post(`${apiUrl || `${BackEndURL}`}/api/conversations/create-conversation`, {
             clientKey,
             userEmail: email,
             sessionId: sid,
@@ -131,7 +131,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
     // (could refactor to a function)
     const sid = generateSessionId();
     setSessionId(sid);
-    axios.post(`${apiUrl || `${BackEndURL}/api`}/conversations/create-conversation`, {
+    axios.post(`${apiUrl || `${BackEndURL}`}/api/conversations/create-conversation`, {
       clientKey,
       userEmail: email,
       sessionId: sid,
@@ -155,7 +155,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
     setLoading(true);
     try {
       // Save user message to conversation
-      await axios.post(`${apiUrl || `${BackEndURL}/api`}/conversations/create-conversation`, {
+      await axios.post(`${apiUrl || `${BackEndURL}`}/api/conversations/create-conversation`, {
         clientKey,
         userEmail,
         sessionId,
@@ -163,7 +163,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
         isBot: false,
       });
       // Get bot response
-      const response = await axios.post(`${apiUrl || `${BackEndURL}/api`}/chat/chatResponse`, {
+      const response = await axios.post(`${apiUrl || `${BackEndURL}`}/api/chat/chatResponse`, {
         clientKey: clientKey,
         message: userMessage.text,
         userEmail,
@@ -177,7 +177,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
       };
       setMessages((msgs) => [...msgs, botResponse]);
       // Save bot message to conversation
-      await axios.post(`${apiUrl || `${BackEndURL}/api`}/conversations/create-conversation`, {
+      await axios.post(`${apiUrl || `${BackEndURL}`}/api/conversations/create-conversation`, {
         clientKey,
         userEmail,
         sessionId,
