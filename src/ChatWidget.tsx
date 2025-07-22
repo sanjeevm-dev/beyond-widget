@@ -32,6 +32,8 @@ interface Message {
   timestamp: Date;
 }
 
+const BackEndURL = "https://customer-support-chatbot-backend-oqjr.onrender.com";
+
 const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId, apiUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -102,7 +104,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
         setSessionId(sid);
         // Optionally, call backend to create conversation
         try {
-          await axios.post(`${apiUrl || "http://localhost:5000/api"}/conversations/create-conversation`, {
+          await axios.post(`${apiUrl || `${BackEndURL}/api`}/conversations/create-conversation`, {
             clientKey,
             userEmail: email,
             sessionId: sid,
@@ -129,7 +131,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
     // (could refactor to a function)
     const sid = generateSessionId();
     setSessionId(sid);
-    axios.post(`${apiUrl || "http://localhost:5000/api"}/conversations/create-conversation`, {
+    axios.post(`${apiUrl || `${BackEndURL}/api`}/conversations/create-conversation`, {
       clientKey,
       userEmail: email,
       sessionId: sid,
@@ -153,7 +155,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
     setLoading(true);
     try {
       // Save user message to conversation
-      await axios.post(`${apiUrl || "http://localhost:5000/api"}/conversations/create-conversation`, {
+      await axios.post(`${apiUrl || `${BackEndURL}/api`}/conversations/create-conversation`, {
         clientKey,
         userEmail,
         sessionId,
@@ -161,7 +163,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
         isBot: false,
       });
       // Get bot response
-      const response = await axios.post(`${apiUrl || "http://localhost:5000/api"}/chat/chatResponse`, {
+      const response = await axios.post(`${apiUrl || `${BackEndURL}/api`}/chat/chatResponse`, {
         clientKey: clientKey,
         message: userMessage.text,
         userEmail,
@@ -175,7 +177,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ theme, clientKey, customUserId,
       };
       setMessages((msgs) => [...msgs, botResponse]);
       // Save bot message to conversation
-      await axios.post(`${apiUrl || "http://localhost:5000/api"}/conversations/create-conversation`, {
+      await axios.post(`${apiUrl || `${BackEndURL}/api`}/conversations/create-conversation`, {
         clientKey,
         userEmail,
         sessionId,

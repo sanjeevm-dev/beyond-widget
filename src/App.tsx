@@ -25,6 +25,8 @@ const defaultTheme = {
   welcomeMessage: 'Hello! How can I help you today?',
 };
 
+const BackEndURL = "https://customer-support-chatbot-backend-oqjr.onrender.com";
+
 interface AppProps {
   clientKey?: string;
   customUserId?: string;
@@ -35,7 +37,7 @@ interface AppProps {
 function App({ clientKey = "3de3d29a-cad0-4ec2-b3e1-922865ac6160", customUserId, apiUrl, theme }: AppProps) {
   const _clientKey = clientKey || "demo-key";
   const _customUserId = customUserId || "demo-user";
-  const _apiUrl = apiUrl || "http://localhost:5000/api";
+  const _apiUrl = apiUrl || `${BackEndURL}/api`;
   return (
     <>
       <ChatWidget 
