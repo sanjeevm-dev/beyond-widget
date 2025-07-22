@@ -1,4 +1,5 @@
 import ChatWidget from "./ChatWidget";
+import { useEffect, useState } from "react";
 
 const defaultTheme = {
   id: "modern-blue",
@@ -38,10 +39,26 @@ function App({ clientKey = "3de3d29a-cad0-4ec2-b3e1-922865ac6160", customUserId,
   const _clientKey = clientKey || "demo-key";
   const _customUserId = customUserId || "demo-user";
   const _apiUrl = apiUrl || `${BackEndURL}/api`;
+  const [loadedTheme, setLoadedTheme] = useState<typeof defaultTheme>(theme || defaultTheme);
+
+  useEffect(() => {
+    const fetchTheme = async () => {
+      try {
+        const res = await fetch(`${BackEndURL}/api/theme/public/${_clientKey}`);
+        if (!res.ok) throw new Error('Theme fetch failed');
+        const data = await res.json();
+        setLoadedTheme({ ...defaultTheme, ...data });
+      } catch (e) {
+        setLoadedTheme(defaultTheme);
+      }
+    };
+    fetchTheme();
+  }, [_clientKey]);
+
   return (
     <>
       <ChatWidget 
-        theme={theme || defaultTheme}
+        theme={loadedTheme}
         clientKey={_clientKey}
         customUserId={_customUserId}
         apiUrl={_apiUrl}
