@@ -46,6 +46,19 @@ const InfoCollector: React.FC<{
     e.preventDefault();
     if (!validate()) return;
 
+    const resp = fetch(
+      "http://localhost:9000/api/conversations/create-conversation",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
+
+    console.log(resp);
+
     localStorage.setItem("userInfo", JSON.stringify(formData));
 
     setIsSubmitted(true);

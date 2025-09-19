@@ -22,8 +22,8 @@ const defaultTheme = {
   headerColor: "#589ee4", // matches headerFooterBgColor
   buttonColor: "#1d4ed8", // matches primaryColor
   companyName: "Your Company",
-  companyLogo: '',
-  welcomeMessage: 'Hello! How can I help you today?',
+  companyLogo: "",
+  welcomeMessage: "Hello! How can I help you today?",
 };
 
 const BackEndURL = "https://customer-support-chatbot-backend-oqjr.onrender.com";
@@ -35,17 +35,24 @@ interface AppProps {
   theme?: typeof defaultTheme;
 }
 
-function App({ clientKey = "3de3d29a-cad0-4ec2-b3e1-922865ac6160", customUserId, apiUrl, theme }: AppProps) {
+function App({
+  clientKey = "3de3d29a-cad0-4ec2-b3e1-922865ac6160",
+  customUserId,
+  apiUrl,
+  theme,
+}: AppProps) {
   const _clientKey = clientKey || "demo-key";
   const _customUserId = customUserId || "demo-user";
-  const _apiUrl = apiUrl || `${BackEndURL}/api`;
-  const [loadedTheme, setLoadedTheme] = useState<typeof defaultTheme>(theme || defaultTheme);
+  const _apiUrl = apiUrl || `${BackEndURL}`;
+  const [loadedTheme, setLoadedTheme] = useState<typeof defaultTheme>(
+    theme || defaultTheme
+  );
 
   useEffect(() => {
     const fetchTheme = async () => {
       try {
         const res = await fetch(`${BackEndURL}/api/theme/public/${_clientKey}`);
-        if (!res.ok) throw new Error('Theme fetch failed');
+        if (!res.ok) throw new Error("Theme fetch failed");
         const data = await res.json();
         setLoadedTheme({ ...defaultTheme, ...data });
       } catch (e) {
@@ -57,7 +64,7 @@ function App({ clientKey = "3de3d29a-cad0-4ec2-b3e1-922865ac6160", customUserId,
 
   return (
     <>
-      <ChatWidget 
+      <ChatWidget
         theme={loadedTheme}
         clientKey={_clientKey}
         customUserId={_customUserId}
