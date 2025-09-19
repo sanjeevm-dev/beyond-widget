@@ -1,17 +1,15 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
-
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
     lib: {
-      entry: './src/widget-entry.tsx',
-      name: 'ChatBotWidget',
-      fileName: 'chat-bot-widget',
-      formats: ['iife'],
+      entry: "./src/mountWidget.tsx",
+      name: "ExthalpyAssistant",
+      fileName: "assistant",
+      formats: ["iife"],
     },
     rollupOptions: {
       output: {
@@ -20,7 +18,7 @@ export default defineConfig({
     },
   },
   define: {
-    'process.env.NODE_ENV': JSON.stringify('production'),
-    'process.env': '{}',
+    "process.env.NODE_ENV": JSON.stringify("production"),
+    "process.env": "{}",
   },
-})
+});

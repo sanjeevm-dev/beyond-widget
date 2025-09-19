@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Send, Bot, User, X, MoreVertical } from "lucide-react";
+import { motion } from "framer-motion";
+import { Send, X, MoreVertical } from "lucide-react";
 import axios from "axios";
 import EmailCollector from "./EmailCollector";
 
@@ -42,7 +42,6 @@ const BackEndURL = "https://customer-support-chatbot-backend-oqjr.onrender.com";
 const ChatWidget: React.FC<ChatWidgetProps> = ({
   theme,
   clientKey,
-  customUserId,
   apiUrl,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -59,7 +58,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
-  const [showEmailCollector, setShowEmailCollector] = useState(false);
+
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [step, setStep] = useState<"welcome" | "email" | "chat">("welcome");
@@ -116,9 +115,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({
 
   const handleEmailCollected = ({ name, email, mobile }: UserInfo) => {
     setUserEmail(email);
-    setShowEmailCollector(false);
     setStep("chat");
-
     const sid = generateSessionId();
     setSessionId(sid);
 
@@ -207,7 +204,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({
         if (!isOpen) setUnreadCount(0);
       }}
       className={`relative flex items-center justify-center ${
-        isOpen ? "w-15 h-15" : "w-[72px] h-[72px]"
+        isOpen ? "w-15 h-15" : "w-20 h-20"
       } rounded-full shadow-lg text-white`}
       style={{
         background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})`,

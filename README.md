@@ -1,69 +1,45 @@
-# React + TypeScript + Vite
+# Customer Support Chatbot Widget
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Development
 
-Currently, two official plugins are available:
+- `npm install`
+- `npm run dev`
+- `npm run build`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Embedding the Widget
 
-## Expanding the ESLint configuration
+Drop a single script tag into the host page. The widget will create its own container and mount automatically:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```html
+<script src="https://cdn.example.com/chat-bot-widget.js" data-client-key="YOUR_CLIENT_KEY"></script>
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Replace the `src` with the path where you host the bundled asset produced in `dist/chat-bot-widget.iife.js`, and set `data-client-key` to the key issued for the tenant.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Optional attributes
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- `data-custom-user-id` – override the generated user identifier.
+- `data-api-url` – point the widget at a different API base.
+- `data-target` – CSS selector of an existing element to mount into (no DOM removal on destroy).
+- `data-container-id` – id assigned to the auto-created container (defaults to `chat-bot-widget`).
+- `data-auto-mount="false"` – ship the script without mounting so you can control it manually.
+
+### Manual control (optional)
+
+When you need imperative control, call the exposed global:
+
+```html
+<script>
+  const container = document.createElement('div');
+  document.body.appendChild(container);
+  const instance = window.ChatBotWidget.mount(container, {
+    clientKey: 'YOUR_CLIENT_KEY',
+    customUserId: 'user-123',
+    apiUrl: 'https://api.example.com',
+    removeContainerOnDestroy: false,
+  });
+  // instance.destroy();
+</script>
 ```
+
+You can destroy all auto-mounted instances using `window.ChatBotWidget.destroy()`.

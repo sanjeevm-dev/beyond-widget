@@ -20,7 +20,9 @@ const InfoCollector: React.FC<{
     mobile: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
   const [isSubmitted, setIsSubmitted] = useState(false);
+  console.log(isSubmitted);
 
   const validate = () => {
     let newErrors: { [key: string]: string } = {};
