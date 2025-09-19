@@ -1,0 +1,29 @@
+{
+  "buildCommand": "npm ci && npm run build && npm run export",
+  "outputDirectory": "out",
+  "headers": [
+    {
+      "source": "/exthalpy/assistant.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "public,max-age=300" },
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/exthalpy/:ver/assistant.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public,max-age=31536000,immutable"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        }
+      ]
+    }
+  ]
+}
