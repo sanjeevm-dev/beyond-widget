@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
     lib: {
-      entry: "./src/mountWidget.tsx",
-      name: "ExthalpyAssistant",
+      entry: "./src/widget-entry.tsx", // ✅ auto-mount entry
+      name: "ChatBotWidget",
       fileName: "assistant",
       formats: ["iife"],
     },
